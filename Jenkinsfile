@@ -9,7 +9,7 @@ pipeline {
     stages {
         stage('Checkout Source Code') {
             steps {
-                git branch: 'main', url: 'https://github.com/Yaqoob599/docker-dec-22.git'
+                git branch: 'main', url: 'https://github.com/Yaqoob599/Ekart.git'
             }
         }
         
@@ -33,7 +33,7 @@ pipeline {
                 script {
                         withCredentials([string(credentialsId: 'dockerhub_password', variable: 'DOCKERHUB_PASSWORD')]) {
                         sh 'docker login -u yaqoobali -p ${DOCKERHUB_PASSWORD}'
-}
+
                         sh 'docker tag ${IMAGE_REPO_NAME}:${IMAGE_TAG} ${DOCKER_IMAGE}'
                         sh 'docker push ${DOCKER_IMAGE}'
                     
