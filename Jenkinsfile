@@ -3,7 +3,7 @@ pipeline {
     environment {
         IMAGE_REPO_NAME = "Ekart"
         IMAGE_TAG = "v1"
-        DOCKER_IMAGE = "yaqoobali/artisanclass:Ekart
+        DOCKER_IMAGE = "yaqoobali/artisanclass:Ekart"
     }
 
     stages {
