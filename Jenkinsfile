@@ -1,9 +1,9 @@
 pipeline {
     agent any
     environment {
-        IMAGE_REPO_NAME = "Ekart"
+        IMAGE_REPO_NAME = "ekart"
         IMAGE_TAG = "v1"
-        DOCKER_IMAGE = "yaqoobali/artisanclass:Ekart"
+        DOCKER_IMAGE = "yaqoobali/artisanclass:ekart"
     }
 
     stages {
