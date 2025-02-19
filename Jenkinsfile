@@ -13,43 +13,42 @@ pipeline {
             }
         }
         
-        stage('compile') {
+        stage('Compile') {
             steps {
                 sh "mvn clean package -DskipTests=true"
             }
         }
-        
 
         stage('Build Docker Image') {
             steps {
-                sh """
-                    docker build -t ${IMAGE_REPO_NAME}:${IMAGE_TAG} -f docker/Dockerfile .
-                """
+                sh "docker build -t ${env.IMAGE_REPO_NAME}:${env.IMAGE_TAG} -f docker/Dockerfile ."
             }
         }
 
         stage('Push to DockerHub') {
             steps {
                 script {
-                        withCredentials([string(credentialsId: 'dockerhub_password', variable: 'DOCKERHUB_PASSWORD')]) {
-                        sh 'docker login -u yaqoobali -p ${DOCKERHUB_PASSWORD}'
-
-                        sh 'docker tag ${IMAGE_REPO_NAME}:${IMAGE_TAG} ${DOCKER_IMAGE}'
-                        sh 'docker push ${DOCKER_IMAGE}'
-                    
+                    withCredentials([string(credentialsId: 'dockerhub_password', variable: 'DOCKERHUB_PASSWORD')]) {
+                        sh "echo ${env.DOCKERHUB_PASSWORD} | docker login -u yaqoobali --password-stdin"
+                    }
+                    sh "docker tag ${env.IMAGE_REPO_NAME}:${env.IMAGE_TAG} ${env.DOCKER_IMAGE}"
+                    sh "docker push ${env.DOCKER_IMAGE}"
                 }
             }
         }
 
         stage('Deploy Docker Container') {
-    steps {
-        script {
-            sh 'docker pull ${DOCKER_IMAGE}'
-            sh 'docker run -d --name Ekart_container -p 8070:8070 ${DOCKER_IMAGE}'
+            steps {
+                script {
+                    sh "docker pull ${env.DOCKER_IMAGE}"
+
+                    // Stop & remove existing container if it exists
+                    sh "docker stop Ekart_container || true"
+                    sh "docker rm Ekart_container || true"
+
+                    sh "docker run -d --name Ekart_container -p 8070:8070 ${env.DOCKER_IMAGE}"
+                }
+            }
         }
     }
-}
-
-    }
-}
 }
